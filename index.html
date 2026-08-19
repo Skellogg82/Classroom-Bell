@@ -5,173 +5,217 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Classroom Bell</title>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    overflow: hidden;
-  }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+}
 
-  #bellBtn {
-    background: #3a6ea5;
-    color: white;
-    border: none;
-    border-radius: 24px;
-    width: 90%;
-    height: 90%;
-    max-width: 480px;
-    max-height: 480px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-    cursor: pointer;
-    box-shadow: 0 6px 0 #274b73, 0 8px 18px rgba(0,0,0,0.25);
-    transition: transform 0.06s ease, box-shadow 0.06s ease;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-  }
+#bellBtn {
+  background: transparent;
+  color: #3a2a10;
+  border: none;
+  width: 90%;
+  height: 90%;
+  max-width: 480px;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.06s ease;
+}
 
-  #bellBtn:active,
-  #bellBtn.ringing {
-    transform: translateY(6px);
-    box-shadow: 0 0 0 #274b73, 0 4px 10px rgba(0,0,0,0.25);
-  }
+#bellBtn:active,
+#bellBtn.ringing {
+  transform: translateY(4px);
+}
 
-  #bellBtn:focus-visible {
-    outline: 4px solid #ffd166;
-    outline-offset: 4px;
-  }
+#bellBtn:focus-visible {
+  outline: 4px solid #ffd166;
+  outline-offset: 4px;
+  border-radius: 16px;
+}
 
-  #icon {
-    font-size: min(18vw, 140px);
-    line-height: 1;
-    transform-origin: top center;
-  }
+#icon {
+  width: min(45vw, 220px);
+  height: min(45vw, 220px);
+  transform-origin: 50% 15%;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,0.28));
+}
 
-  #bellBtn.ringing #icon {
-    animation: swing 0.5s ease-in-out 4;
-  }
+#bellBtn.ringing #icon {
+  animation: swing 0.5s ease-in-out 4;
+}
 
-  @keyframes swing {
-    0%   { transform: rotate(0deg); }
-    20%  { transform: rotate(18deg); }
-    50%  { transform: rotate(-16deg); }
-    80%  { transform: rotate(10deg); }
-    100% { transform: rotate(0deg); }
-  }
+@keyframes swing {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(14deg); }
+  50% { transform: rotate(-12deg); }
+  80% { transform: rotate(8deg); }
+  100% { transform: rotate(0deg); }
+}
 
-  #label {
-    font-size: min(5vw, 34px);
-    font-weight: 700;
-    letter-spacing: 0.02em;
-  }
+#label {
+  font-size: min(5vw, 34px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
 </style>
 </head>
 <body>
 
-  <button id="bellBtn" aria-label="Ring the classroom bell">
-    <span id="icon">🔔</span>
-    <span id="label">Ring Bell</span>
-  </button>
+<button id="bellBtn" aria-label="Ring the classroom bell">
+  <svg id="icon" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="domeGold" x1="15%" y1="10%" x2="90%" y2="95%">
+        <stop offset="0%" stop-color="#fff6d6"/>
+        <stop offset="30%" stop-color="#f3cf4e"/>
+        <stop offset="60%" stop-color="#d3a422"/>
+        <stop offset="100%" stop-color="#93700f"/>
+      </linearGradient>
+      <linearGradient id="baseGold" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#e8c34a"/>
+        <stop offset="45%" stop-color="#c79a1f"/>
+        <stop offset="100%" stop-color="#8a6a12"/>
+      </linearGradient>
+      <radialGradient id="knobGold" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#fff6d6"/>
+        <stop offset="55%" stop-color="#e2b93a"/>
+        <stop offset="100%" stop-color="#93700f"/>
+      </radialGradient>
+    </defs>
 
-  <script>
-    const btn = document.getElementById('bellBtn');
-    let audioCtx = null;
+    <!-- shadow ellipse under the bell -->
+    <ellipse cx="100" cy="192" rx="66" ry="9" fill="rgba(0,0,0,0.18)"/>
 
-    function getContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
-    }
+    <!-- circular base plate -->
+    <ellipse cx="100" cy="176" rx="72" ry="15" fill="#6b4e12"/>
+    <ellipse cx="100" cy="171" rx="72" ry="15" fill="url(#baseGold)"/>
+    <ellipse cx="100" cy="167" rx="58" ry="9" fill="#7a5c14" opacity="0.55"/>
 
-    // Synthesize a simple hand-bell / chime tone using layered
-    // sine partials with an exponential decay envelope.
-    // No external audio file needed, so this page works fully
-    // offline and has no dependencies to break.
-    function ringBell() {
-      const ctx = getContext();
-      const now = ctx.currentTime;
+    <!-- bell dome -->
+    <path d="M34,150
+             C34,84 60,34 100,34
+             C140,34 166,84 166,150
+             Z"
+          fill="url(#domeGold)" stroke="#7a5c14" stroke-width="2"/>
 
-      const fundamental = 880; // A5, a bright, clear "ding"
-      const partials = [
-        { ratio: 1,    gain: 0.9 },
-        { ratio: 2.01, gain: 0.5 },
-        { ratio: 2.7,  gain: 0.3 },
-        { ratio: 4.2,  gain: 0.15 }
-      ];
+    <!-- dome base ring -->
+    <ellipse cx="100" cy="150" rx="66" ry="12" fill="url(#baseGold)" stroke="#7a5c14" stroke-width="1.5"/>
 
-      const master = ctx.createGain();
-      master.gain.setValueAtTime(0.0001, now);
-      master.gain.exponentialRampToValueAtTime(0.6, now + 0.008);
-      master.gain.exponentialRampToValueAtTime(0.0001, now + 2.6);
-      master.connect(ctx.destination);
+    <!-- shine highlight -->
+    <path d="M62,120 C60,95 70,60 90,45 C78,66 74,96 78,124 Z"
+          fill="#fffdf2" opacity="0.55"/>
 
-      partials.forEach(p => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(fundamental * p.ratio, now);
+    <!-- push knob on top -->
+    <circle cx="100" cy="26" r="15" fill="url(#knobGold)" stroke="#7a5c14" stroke-width="2"/>
+    <circle cx="95" cy="21" r="4" fill="#fffdf2" opacity="0.7"/>
+  </svg>
+  <span id="label">Ring Bell</span>
+</button>
 
-        const g = ctx.createGain();
-        g.gain.setValueAtTime(p.gain, now);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + 2.2 / p.ratio);
+<script>
+const btn = document.getElementById('bellBtn');
+let audioCtx = null;
 
-        osc.connect(g);
-        g.connect(master);
-        osc.start(now);
-        osc.stop(now + 2.8);
-      });
+function getContext() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return audioCtx;
+}
 
-      // second strike, slightly softer, for a natural double-ring feel
-      const master2 = ctx.createGain();
-      master2.gain.setValueAtTime(0.0001, now + 0.32);
-      master2.gain.exponentialRampToValueAtTime(0.4, now + 0.33);
-      master2.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
-      master2.connect(ctx.destination);
+// Synthesize a simple hand-bell / chime tone using layered
+// sine partials with an exponential decay envelope.
+// No external audio file needed, so this page works fully
+// offline and has no dependencies to break.
+function ringBell() {
+  const ctx = getContext();
+  const now = ctx.currentTime;
 
-      partials.forEach(p => {
-        const osc = ctx.createOscillator();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(fundamental * p.ratio, now + 0.32);
+  const fundamental = 880; // A5, a bright, clear "ding"
+  const partials = [
+    { ratio: 1, gain: 0.9 },
+    { ratio: 2.01, gain: 0.5 },
+    { ratio: 2.7, gain: 0.3 },
+    { ratio: 4.2, gain: 0.15 }
+  ];
 
-        const g = ctx.createGain();
-        g.gain.setValueAtTime(p.gain * 0.7, now + 0.32);
-        g.gain.exponentialRampToValueAtTime(0.0001, now + 0.32 + 2.0 / p.ratio);
+  const master = ctx.createGain();
+  master.gain.setValueAtTime(0.0001, now);
+  master.gain.exponentialRampToValueAtTime(0.6, now + 0.008);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 2.6);
+  master.connect(ctx.destination);
 
-        osc.connect(g);
-        g.connect(master2);
-        osc.start(now + 0.32);
-        osc.stop(now + 3.2);
-      });
-    }
+  partials.forEach(p => {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(fundamental * p.ratio, now);
 
-    function triggerRing() {
-      ringBell();
-      btn.classList.remove('ringing');
-      // restart animation
-      void btn.offsetWidth;
-      btn.classList.add('ringing');
-      setTimeout(() => btn.classList.remove('ringing'), 900);
-    }
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(p.gain, now);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 2.2 / p.ratio);
 
-    btn.addEventListener('click', triggerRing);
-    btn.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        triggerRing();
-      }
-    });
-  </script>
+    osc.connect(g);
+    g.connect(master);
+    osc.start(now);
+    osc.stop(now + 2.8);
+  });
+
+  // second strike, slightly softer, for a natural double-ring feel
+  const master2 = ctx.createGain();
+  master2.gain.setValueAtTime(0.0001, now + 0.32);
+  master2.gain.exponentialRampToValueAtTime(0.4, now + 0.33);
+  master2.gain.exponentialRampToValueAtTime(0.0001, now + 2.8);
+  master2.connect(ctx.destination);
+
+  partials.forEach(p => {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(fundamental * p.ratio, now + 0.32);
+
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(p.gain * 0.7, now + 0.32);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.32 + 2.0 / p.ratio);
+
+    osc.connect(g);
+    g.connect(master2);
+    osc.start(now + 0.32);
+    osc.stop(now + 3.2);
+  });
+}
+
+function triggerRing() {
+  ringBell();
+  btn.classList.remove('ringing');
+  // restart animation
+  void btn.offsetWidth;
+  btn.classList.add('ringing');
+  setTimeout(() => btn.classList.remove('ringing'), 900);
+}
+
+btn.addEventListener('click', triggerRing);
+btn.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    triggerRing();
+  }
+});
+</script>
 </body>
 </html>
