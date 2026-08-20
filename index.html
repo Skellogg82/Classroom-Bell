@@ -37,7 +37,7 @@ html, body {
 
 #bellBtn:active,
 #bellBtn.ringing {
-  transform: translateY(3px);
+  transform: translateY(2px);
 }
 
 #bellBtn:focus-visible {
@@ -49,19 +49,21 @@ html, body {
 #icon {
   font-size: min(38vw, 170px);
   line-height: 1;
-  transform-origin: 50% 65%;
+  display: inline-block;
+  transform-origin: 50% 8%;
   filter: drop-shadow(0 8px 10px rgba(0,0,0,0.22));
 }
 
 #bellBtn.ringing #icon {
-  animation: tap 0.35s ease-in-out 1;
+  animation: swing 0.6s ease-in-out 1;
 }
 
-@keyframes tap {
-  0% { transform: scale(1); }
-  30% { transform: scale(0.94, 1.06); }
-  60% { transform: scale(1.03, 0.97); }
-  100% { transform: scale(1); }
+@keyframes swing {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(16deg); }
+  50% { transform: rotate(-14deg); }
+  80% { transform: rotate(8deg); }
+  100% { transform: rotate(0deg); }
 }
 
 #label {
@@ -74,7 +76,7 @@ html, body {
 <body>
 
 <button id="bellBtn" aria-label="Ring the classroom bell">
-  <span id="icon">🛎️</span>
+  <span id="icon">🔔</span>
   <span id="label">Ring Bell</span>
 </button>
 
@@ -92,22 +94,22 @@ function getContext() {
   return audioCtx;
 }
 
-// Synthesize a bright, ringing "ding" like a real spring-loaded hotel
-// front-desk bell: a fast attack, inharmonic overtones, and a longer
-// shimmering decay (two slightly detuned oscillators per partial create
-// the natural "beating" you hear from a struck bell). No external audio
-// file needed, so this page works fully offline.
+// Synthesize a bright "ding" with a long, singing decay like a real
+// handbell: a fast attack, inharmonic overtones, and several seconds of
+// ring-out (two slightly detuned oscillators per partial create the
+// natural shimmering "beat" you hear from a struck bell as it fades).
+// No external audio file needed, so this page works fully offline.
 function ringBell() {
   const ctx = getContext();
   const now = ctx.currentTime;
 
   const fundamental = 1600;
   const partials = [
-    { ratio: 1.0, gain: 1.0,  decay: 1.4 },
-    { ratio: 2.0, gain: 0.55, decay: 1.1 },
-    { ratio: 2.4, gain: 0.35, decay: 0.9 },
-    { ratio: 3.0, gain: 0.22, decay: 0.7 },
-    { ratio: 4.5, gain: 0.12, decay: 0.5 }
+    { ratio: 1.0, gain: 1.0,  decay: 3.4 },
+    { ratio: 2.0, gain: 0.55, decay: 2.8 },
+    { ratio: 2.4, gain: 0.35, decay: 2.2 },
+    { ratio: 3.0, gain: 0.22, decay: 1.7 },
+    { ratio: 4.5, gain: 0.12, decay: 1.2 }
   ];
 
   const master = ctx.createGain();
@@ -117,7 +119,7 @@ function ringBell() {
 
   partials.forEach(p => {
     // two slightly detuned oscillators per partial create the natural
-    // shimmering "beat" of a real struck bell
+    // shimmering "beat" of a real struck bell as it rings out
     [-3, 3].forEach(cents => {
       const osc = ctx.createOscillator();
       osc.type = 'sine';
@@ -131,11 +133,11 @@ function ringBell() {
       osc.connect(g);
       g.connect(master);
       osc.start(now);
-      osc.stop(now + p.decay + 0.05);
+      osc.stop(now + p.decay + 0.1);
     });
   });
 
-  master.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
+  master.gain.exponentialRampToValueAtTime(0.0001, now + 3.6);
 }
 
 function triggerRing() {
@@ -144,7 +146,7 @@ function triggerRing() {
   // restart animation
   void btn.offsetWidth;
   btn.classList.add('ringing');
-  setTimeout(() => btn.classList.remove('ringing'), 400);
+  setTimeout(() => btn.classList.remove('ringing'), 700);
 }
 
 btn.addEventListener('click', triggerRing);
